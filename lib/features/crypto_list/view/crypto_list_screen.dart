@@ -1,4 +1,6 @@
 import 'package:crypto_app/features/crypto_list/widgets/widgets.dart';
+import 'package:crypto_app/repositories/crypto_coins/crypto_coins_repository.dart';
+import 'package:crypto_app/repositories/crypto_coins/models/crypto_coin_model.dart';
 import 'package:flutter/material.dart';
 
 class CryptoListScreen extends StatefulWidget {
@@ -9,27 +11,40 @@ class CryptoListScreen extends StatefulWidget {
 }
 
 class _CryptoListScreenState extends State<CryptoListScreen> {
-  int _counter = 0;
+  List<CryptoCoin>? _cryptoCoinList;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  @override
+  void initState() {
+    _loadCryptoCoins();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Crypto app'),
-        ),
-        body: ListView.separated(
-            itemCount: 15,
-            separatorBuilder: (context, index) => Divider(),
-            itemBuilder: (context, index) {
-              final coinName = 'Bitcoin';
-              return CryptoCoinTile(coinName: coinName,);
-            }) // This trailing comma makes auto-formatting nicer for build methods.
+      appBar: AppBar(
+        title: Text('Crypto app'),
+      ),
+      body: (_cryptoCoinList == null)
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.separated(
+              padding: EdgeInsets.only(top: 16),
+              itemCount: _cryptoCoinList!.length,
+              separatorBuilder: (context, index) => Divider(),
+              itemBuilder: (context, index) {
+                final coin = _cryptoCoinList!;
+                return CryptoCoinTile(
+                  coin: coin[index],
+                );
+              },
+            ),
     );
+  }
+
+  Future<void> _loadCryptoCoins() async {
+    _cryptoCoinList = await CryptoCoinsRepository().getCoinsList();
+    setState(() {});
   }
 }
