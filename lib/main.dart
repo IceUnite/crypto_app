@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:crypto_app/features/crypto_list/crypto_list.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -32,58 +35,50 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const MyHomePage(title: 'My crypto app'),
+      routes: {
+        '/coins_list': (context) => CryptoListScreen(),
+        '/coin': (context) => const CryptoCoinScreen(),
+      },
+      initialRoute: '/coins_list',
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class CryptoCoinScreen extends StatefulWidget {
+  const CryptoCoinScreen({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<CryptoCoinScreen> createState() => _CryptoCoinScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _CryptoCoinScreenState extends State<CryptoCoinScreen> {
+  String? coinName;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  @override
+  void didChangeDependencies() {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    assert(args != null && args is String, 'You must provide String args');
+    // if (args == null){
+    //   log('Need args');
+    //   return;
+    // }
+    // if (args is! String){
+    //   log('Need string');
+    //   return;
+    // }
+    coinName = args.toString();
+    log('$coinName');
+
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme1 = Theme.of(context).textTheme.bodyMedium;
-    final theme2 = Theme.of(context).textTheme.labelSmall;
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: ListView.separated(
-            itemCount: 15,
-            separatorBuilder: (context, index) => Divider(),
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  'bitcoin',
-                  style: theme1,
-                ),
-                subtitle: Text(
-                  '10000\$',
-                  style: theme2,
-                ),
-                leading: Image.asset(
-                  'assets/png/Bitcoin.svg.png',
-                  width: 40,
-                  height: 40,
-                ),
-                trailing: Icon(Icons.arrow_forward_ios_rounded),
-              );
-            }) // This trailing comma makes auto-formatting nicer for build methods.
-        );
+      appBar: AppBar(
+        title: Text(coinName ?? '...'),
+      ),
+    );
   }
 }
