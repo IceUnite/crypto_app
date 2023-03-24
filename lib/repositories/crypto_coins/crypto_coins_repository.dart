@@ -17,7 +17,7 @@ class CryptoCoinsRepository {
       final imageUrl = usdData['IMAGEURL'];
       return CryptoCoin(name: e.key, priceInUSD: price, imageUrl: 'https://www.cryptocompare.com/$imageUrl');
     }).toList();
-
+ 
     return cryptoCoinList;
   }
 }

@@ -19,5 +19,6 @@ final darkTheme = ThemeData(
       fontWeight: FontWeight.w700,
       fontSize: 14,
     ),
+
   ),
 );
